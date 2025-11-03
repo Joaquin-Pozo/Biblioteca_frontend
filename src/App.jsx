@@ -5,6 +5,8 @@ import Navbar from './components/Navbar';
 import NotFound from "./components/NotFound";
 import SocioList from "./components/SocioList";
 import AddEditSocio from './components/AddEditSocio';
+import AutoresList from './components/autores/AutoresList';
+import AddEditAutor from './components/autores/AddEditAutor';
 
 function App() {
   return (
@@ -16,9 +18,17 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
+
+          {/* Rutas para socios */}
           <Route path="/socio/list" element={<SocioList/>} />
           <Route path="/socio/add" element={<AddEditSocio/>} />
           <Route path="/socio/edit/:id" element={<AddEditSocio/>} />
+
+          {/* Rutas para autores */}
+          <Route path="/autor/list" element={<AutoresList/>} />
+          <Route path="/autor/add" element={<AddEditAutor/>} />
+          <Route path="/autor/edit/:id" element={<AddEditAutor/>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -13,6 +13,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DrawIcon from '@mui/icons-material/Draw';
 import { Link } from "react-router-dom";
 
 export default function Sidebar({ open, toggleDrawer }) {
@@ -20,6 +21,7 @@ export default function Sidebar({ open, toggleDrawer }) {
     { text: "Inicio", icon: <HomeIcon />, path: "/home" },
     { text: "Socios", icon: <GroupIcon />, path: "/socio/list" },
     { text: "Libros", icon: <LibraryBooksIcon />, path: "/libro/list" },
+    { text: "Autores", icon: <DrawIcon />, path: "/autor/list" },
   ];
 
   return (
