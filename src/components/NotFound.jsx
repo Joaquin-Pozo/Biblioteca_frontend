@@ -20,6 +20,7 @@ export default function NotFound() {
             <Typography variant="h6">
               La página web no se encuentra disponible.
             </Typography>
+             <br /><br />
             <Button variant="contained" component={Link} to="/home">
               Volver al Inicio
             </Button>
