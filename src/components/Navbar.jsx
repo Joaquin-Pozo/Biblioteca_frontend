@@ -25,7 +25,7 @@ export default function Navbar() {
             aria-label="menu"
             sx={{ mr: 2 }}
             onClick={toggleDrawer(true)}
-          >
+                     >
             <MenuIcon />
           </IconButton>
 

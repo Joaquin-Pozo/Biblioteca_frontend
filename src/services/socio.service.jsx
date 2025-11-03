@@ -16,7 +16,7 @@ const create = data => {
 }
 
 //Actualizar socio
-const update = (id,data) => {
+const update = (id, data) => {
     return httpClient.put(`/socio/${id}`, data);
 }
 

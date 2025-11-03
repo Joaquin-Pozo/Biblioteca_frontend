@@ -7,7 +7,6 @@ import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import SaveIcon from "@mui/icons-material/Save";
-import { Container, Typography } from "@mui/material";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
@@ -81,10 +80,10 @@ const AddEditSocio = () => {
                     const socio = response.data;
                     setIdentificador(socio.identificador);
                     setNombreCompleto(socio.nombreCompleto);
-                    setTelefono(socio.telefono);
                     setCorreo(socio.correo);
-                    setEstadoSocio(socio.estadoSocio);
+                    setTelefono(socio.telefono);
                     setFechaInscripcion(socio.fechaInscripcion);
+                    setEstadoSocio(socio.estadoSocio);
                 })
                 .catch((error) => {
                     console.log("Se ha producido un error al obtener socio:", error);
