@@ -25,4 +25,4 @@ const remove = (id) => {
     return httpClient.delete(`/autor/${id}`);
 }
 
-export default ( getAll, get, create, update, remove );
+export default { getAll, get, create, update, remove };
