@@ -7,6 +7,9 @@ import SocioList from "./components/SocioList";
 import AddEditSocio from './components/AddEditSocio';
 import AutoresList from './components/autores/AutoresList';
 import AddEditAutor from './components/autores/AddEditAutor';
+import LibroList from './components/LibroList';
+
+//import AddEditLibro from './components/libros/AddEditLibro';  
 
 function App() {
   return (
@@ -29,6 +32,10 @@ function App() {
           <Route path="/autor/add" element={<AddEditAutor/>} />
           <Route path="/autor/edit/:id" element={<AddEditAutor/>} />
 
+          {/* Rutas para libros */}
+          <Route path="/libro/list" element={<LibroList/>} />
+          <Route path="/libro/add" element={<NotFound />} />
+          <Route path="/libro/edit/:id" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

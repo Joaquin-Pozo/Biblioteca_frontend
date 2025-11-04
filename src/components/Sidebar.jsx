@@ -20,8 +20,8 @@ export default function Sidebar({ open, toggleDrawer }) {
   const menuItems = [
     { text: "Inicio", icon: <HomeIcon />, path: "/home" },
     { text: "Socios", icon: <GroupIcon />, path: "/socio/list" },
-    { text: "Libros", icon: <LibraryBooksIcon />, path: "/libro/list" },
     { text: "Autores", icon: <DrawIcon />, path: "/autor/list" },
+    { text: "Libros", icon: <LibraryBooksIcon />, path: "/libro/list" },
   ];
 
   return (
