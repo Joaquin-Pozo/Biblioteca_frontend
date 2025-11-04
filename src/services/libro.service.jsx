@@ -1,20 +1,24 @@
 import httpClient from "../http-common";
 
-
 //traer todos los libros
 const getAll = () => {
     return httpClient.get('/libro');
 }
 
-/*
 //Traer libro por id
 const get = id => {
-    return httpClient.get(`/api/tools/${id}`);
+    return httpClient.get(`/libro/${id}`);
 }
 //Crear libro
 const create = data => {
-    return httpClient.post("/api/tools/", data);
+    return httpClient.post("/libro", data);
 }
+
+//Actualizar libro
+const update = (id, data) => {
+    return httpClient.put(`/libro/${id}`, data);
+}
+/*
 //Dar de baja libro
 const unsubscribeTool = id => {
     return httpClient.put(`/api/tools/${id}/unsubscribe`);
@@ -30,4 +34,4 @@ const getLibroUnitsByState = data => {
 }*/
 
 //, create, get, unsubscribeTool, getToolUnitsByState
-export default { getAll};
+export default { getAll, get, create, update };

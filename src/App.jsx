@@ -8,6 +8,7 @@ import AddEditSocio from './components/AddEditSocio';
 import AutoresList from './components/autores/AutoresList';
 import AddEditAutor from './components/autores/AddEditAutor';
 import LibroList from './components/LibroList';
+import AddEditLibro from './components/AddEditLibro';
 
 //import AddEditLibro from './components/libros/AddEditLibro';  
 
@@ -34,8 +35,8 @@ function App() {
 
           {/* Rutas para libros */}
           <Route path="/libro/list" element={<LibroList/>} />
-          <Route path="/libro/add" element={<NotFound />} />
-          <Route path="/libro/edit/:id" element={<NotFound />} />
+          <Route path="/libro/add" element={<AddEditLibro />} />
+          <Route path="/libro/edit/:id" element={<AddEditLibro />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
