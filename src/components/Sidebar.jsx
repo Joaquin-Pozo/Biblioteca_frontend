@@ -14,6 +14,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DrawIcon from '@mui/icons-material/Draw';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import { Link } from "react-router-dom";
 
 export default function Sidebar({ open, toggleDrawer }) {
@@ -23,6 +24,7 @@ export default function Sidebar({ open, toggleDrawer }) {
     { text: "Autores", icon: <DrawIcon />, path: "/autor/list" },
     { text: "Libros", icon: <LibraryBooksIcon />, path: "/libro/list" },
     { text: "Copias-Libro", icon: <LibraryBooksIcon />, path: "/copia/list" },
+    { text: "Préstamos", icon: <HandshakeIcon />, path: "/prestamo/list" },
   ];
 
   return (

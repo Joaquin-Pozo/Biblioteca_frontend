@@ -11,6 +11,8 @@ import LibroList from './components/LibroList';
 import AddEditLibro from './components/AddEditLibro';
 import CopiaList from './components/CopiaList';
 import EditCopia from './components/EditCopia';
+import PrestamosList from './components/prestamos/PrestamosList';
+import AddReturnPrestamo from './components/prestamos/AddReturnPrestamo';
 
 function App() {
   return (
@@ -41,6 +43,12 @@ function App() {
           {/* Rutas para copia de libros */}
           <Route path="/copia/list" element={<CopiaList/>} />
           <Route path="/copia/edit/:id" element={<EditCopia/>} />
+
+          {/* Rutas para prestamos */}
+          <Route path="/prestamo/list" element={<PrestamosList/>} />
+          <Route path="/prestamo/add" element={<AddReturnPrestamo/>} />
+          <Route path="/prestamo/return/:id" element={<AddReturnPrestamo/>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
