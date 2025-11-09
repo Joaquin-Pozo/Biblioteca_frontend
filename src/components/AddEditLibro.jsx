@@ -13,7 +13,7 @@ import Alert from "@mui/material/Alert";
 
 const AddEditLibro = () => {
     const [titulo, setTitulo] = useState("");
-    const [stock, setStock] = useState("");
+    const [cantidad, setCantidad] = useState("");
     const [categoria, setCategoria] = useState("");
     const [editorial, setEditorial] = useState("");
     const [anioPublicacion, setAnioPublicacion] = useState("");
@@ -32,12 +32,9 @@ const AddEditLibro = () => {
         setOpenSnackbar(false);
     };
 
-     
-
-
     const saveLibro = (e) => {
         e.preventDefault();
-        const libro = { titulo, stock, categoria, editorial, anioPublicacion, autor: {id:autorId }};
+        const libro = { titulo, cantidad, categoria, editorial, anioPublicacion, autor: {id:autorId }};
 
         if (id) {
             // Actualizar libro
@@ -84,11 +81,9 @@ const AddEditLibro = () => {
                 .then((response) => {
                     const libro = response.data;
                     setTitulo(libro.titulo);
-                    setStock(libro.stock);
                     setCategoria(libro.categoria);
                     setEditorial(libro.editorial);
                     setAnioPublicacion(libro.anioPublicacion);
-                    //revisar autor
                     setAutorId(libro.autor?.id || "");
                     
                 })
@@ -169,15 +164,6 @@ const AddEditLibro = () => {
                     onChange={(e) => setAnioPublicacion(e.target.value)}
                 />
             </FormControl>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-                <TextField
-                    id="stock"
-                    label="Stock"
-                    value={stock}
-                    variant="standard"
-                    onChange={(e) => setStock(e.target.value)}
-                />
-            </FormControl>
 
            {/* Carga Autor en combo  */}
             <FormControl fullWidth>
@@ -196,6 +182,16 @@ const AddEditLibro = () => {
                   </MenuItem>
                 ))}
               </TextField>
+            </FormControl>
+            
+            <FormControl fullWidth sx={{ mb: 2 }}>
+                <TextField
+                    id="cantidad"
+                    label="Cantidad"
+                    value={cantidad}
+                    variant="standard"
+                    onChange={(e) => setCantidad(e.target.value)}
+                />
             </FormControl>
 
             <Button
