@@ -9,8 +9,8 @@ import AutoresList from './components/autores/AutoresList';
 import AddEditAutor from './components/autores/AddEditAutor';
 import LibroList from './components/LibroList';
 import AddEditLibro from './components/AddEditLibro';
-
-//import AddEditLibro from './components/libros/AddEditLibro';  
+import CopiaList from './components/CopiaList';
+import EditCopia from './components/EditCopia';
 
 function App() {
   return (
@@ -37,6 +37,10 @@ function App() {
           <Route path="/libro/list" element={<LibroList/>} />
           <Route path="/libro/add" element={<AddEditLibro />} />
           <Route path="/libro/edit/:id" element={<AddEditLibro />} />
+
+          {/* Rutas para copia de libros */}
+          <Route path="/copia/list" element={<CopiaList/>} />
+          <Route path="/copia/edit/:id" element={<EditCopia/>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

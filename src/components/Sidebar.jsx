@@ -22,6 +22,7 @@ export default function Sidebar({ open, toggleDrawer }) {
     { text: "Socios", icon: <GroupIcon />, path: "/socio/list" },
     { text: "Autores", icon: <DrawIcon />, path: "/autor/list" },
     { text: "Libros", icon: <LibraryBooksIcon />, path: "/libro/list" },
+    { text: "Copias-Libro", icon: <LibraryBooksIcon />, path: "/copia/list" },
   ];
 
   return (
