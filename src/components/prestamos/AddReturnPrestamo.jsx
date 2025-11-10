@@ -38,6 +38,11 @@ const AddReturnPrestamo = () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+  
+  const convertToLocalDateTime = (dateString) => {
+      if (!dateString) return null;
+      return `${dateString}T00:00:00`;
+  };
 
   const savePrestamo = (e) => {
     e.preventDefault();
@@ -46,9 +51,9 @@ const AddReturnPrestamo = () => {
       id,
       socio: { id: socioId },
       copia: { id: copiaId },
-      fechaPrestamo,
-      fechaPactadaDevolucion,
-      fechaDevolucion,
+      fechaPrestamo: convertToLocalDateTime(fechaPrestamo),
+      fechaPactadaDevolucion: convertToLocalDateTime(fechaPactadaDevolucion),
+      fechaDevolucion: convertToLocalDateTime(fechaDevolucion),
       daniado,
       multa,
     };
