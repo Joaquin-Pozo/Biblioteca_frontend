@@ -12,6 +12,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import socioService from "../services/socio.service";
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { Box, Container, Typography } from "@mui/material";
 
 const SocioList = () => {
@@ -41,18 +42,39 @@ const SocioList = () => {
   const handleDelete = (id) => {
     console.log("Printing id", id);
     const confirmDelete = window.confirm(
-      "¿Esta seguro que desea borrar este socio?"
+      "¿Esta seguro que desea suspender este socio?"
     );
     if (confirmDelete) {
       socioService
         .remove(id)
         .then((response) => {
-          console.log("Socio ha sido eliminado.", response.data);
+          console.log("Socio ha sido suspendido.", response.data);
           init();
         })
         .catch((error) => {
           console.log(
-            "Se ha producido un error al intentar eliminar al socio",
+            "Se ha producido un error al intentar suspender al socio",
+            error
+          );
+        });
+    }
+  };
+
+  const handleActivate = (id) => {
+    console.log("Printing id", id);
+    const confirmActivate = window.confirm(
+      "¿Esta seguro que desea activar este socio?"
+    );
+    if (confirmActivate) {
+      socioService
+        .activate(id)
+        .then((response) => {
+          console.log("Socio ha sido activado.", response.data);
+          init();
+        })
+        .catch((error) => {
+          console.log(
+            "Se ha producido un error al intentar activar al socio",
             error
           );
         });
@@ -108,7 +130,7 @@ const SocioList = () => {
                   <TableCell align="left">{socio.correo}</TableCell>
                   <TableCell align="left">{socio.estadoSocio}</TableCell>
                   
-                  <TableCell>
+                  <TableCell align="center">
                     <Button
                       variant="contained"
                       color="info"
@@ -119,17 +141,32 @@ const SocioList = () => {
                     >
                       Editar
                     </Button>
-
-                    <Button
+                    {/* Boton para suspender a un socio */}
+                    {socio.estadoSocio === "disponible" && (
+                      <Button
                       variant="contained"
                       color="error"
                       size="small"
                       onClick={() => handleDelete(socio.id)}
                       style={{ marginLeft: "0.5rem" }}
                       startIcon={<DeleteIcon />}
-                    >
-                    Eliminar
-                    </Button>
+                      >
+                        Suspender
+                      </Button>
+                    )}
+                    {/* Boton para activar a un socio */}
+                    {(socio.estadoSocio === "restringido" || socio.estadoSocio === "suspendido") && (
+                      <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      onClick={() => handleActivate(socio.id)}
+                      style={{ marginLeft: "0.5rem" }}
+                      startIcon={<RestartAltIcon />}
+                      >
+                        Activar
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
