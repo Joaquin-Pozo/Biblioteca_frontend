@@ -38,11 +38,6 @@ const AddReturnPrestamo = () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
-  
-  const convertToLocalDateTime = (dateString) => {
-      if (!dateString) return null;
-      return `${dateString}T00:00:00`;
-  };
 
   const savePrestamo = (e) => {
     e.preventDefault();
@@ -51,9 +46,9 @@ const AddReturnPrestamo = () => {
       id,
       socio: { id: socioId },
       copia: { id: copiaId },
-      fechaPrestamo: convertToLocalDateTime(fechaPrestamo),
-      fechaPactadaDevolucion: convertToLocalDateTime(fechaPactadaDevolucion),
-      fechaDevolucion: convertToLocalDateTime(fechaDevolucion),
+      fechaPrestamo,
+      fechaPactadaDevolucion,
+      fechaDevolucion,
       daniado,
       multa,
     };
@@ -63,6 +58,7 @@ const AddReturnPrestamo = () => {
       prestamoService
         .returnLoan(id, prestamo)
         .then((response) => {
+          alert(response);
           setSnackbarMessage("Devolución registrada correctamente.");
           setSnackbarSeverity("success");
           setOpenSnackbar(true);
@@ -77,19 +73,30 @@ const AddReturnPrestamo = () => {
     } else {
       // Crear nuevo préstamo
       prestamoService
-        .create(prestamo)
-        .then((response) => {
-          setSnackbarMessage("Préstamo registrado correctamente.");
-          setSnackbarSeverity("success");
-          setOpenSnackbar(true);
-          setTimeout(() => navigate("/prestamo/list"), 1500);
-        })
-        .catch((error) => {
-          console.error("Error al registrar préstamo:", error);
-          setSnackbarMessage("Error al registrar préstamo.");
-          setSnackbarSeverity("error");
-          setOpenSnackbar(true);
-        });
+          .create(prestamo)
+          .then((response) => {
+            console.log("Respuesta del backend:", response);
+
+            // Verificar si la respuesta trae un mensaje de error o un objeto válido
+            if (typeof response.data === "string") {
+              // El backend devolvió un mensaje (no un objeto)
+              setSnackbarMessage(response.data);
+              setSnackbarSeverity("warning"); // o "error", según tu preferencia
+              setOpenSnackbar(true);
+            } else {
+              // El backend devolvió un objeto (éxito)
+              setSnackbarMessage("Préstamo registrado correctamente.");
+              setSnackbarSeverity("success");
+              setOpenSnackbar(true);
+              setTimeout(() => navigate("/prestamo/list"), 1500);
+            }
+          })
+          .catch((error) => {
+            console.error("Error al registrar préstamo:", error);
+            setSnackbarMessage("Error al registrar préstamo.");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+          });
     }
   };
 
