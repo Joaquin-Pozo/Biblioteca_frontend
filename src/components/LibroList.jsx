@@ -38,27 +38,6 @@ const LibroList = () => {
     init();
   }, []);
 
-  const handleDelete = (id) => {
-    console.log("Printing id", id);
-    const confirmDelete = window.confirm(
-      "¿Esta seguro que desea borrar este libro?"
-    );
-    if (confirmDelete) {
-      libroService
-        .remove(id)
-        .then((response) => {
-          console.log("Libro ha sido eliminado.", response.data);
-          init();
-        })
-        .catch((error) => {
-          console.log(
-            "Se ha producido un error al intentar eliminar el libro.",
-            error
-          );
-        });
-    }
-  };
-
   const handleEdit = (id) => {
     console.log("Printing id", id);
     navigate(`/libro/edit/${id}`);
@@ -68,7 +47,7 @@ const LibroList = () => {
   return (
     <Container sx={{ mt: 5 }}>
       <Typography variant="h6" gutterBottom>
-        Lista de LIbros
+        Lista de Libros
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
@@ -118,17 +97,6 @@ const LibroList = () => {
                       startIcon={<EditIcon />}
                     >
                       Editar
-                    </Button>
-
-                    <Button
-                      variant="contained"
-                      color="error"
-                      size="small"
-                      onClick={() => handleDelete(libro.id)}
-                      style={{ marginLeft: "0.5rem" }}
-                      startIcon={<DeleteIcon />}
-                    >
-                    Eliminar
                     </Button>
                   </TableCell>
                 </TableRow>
