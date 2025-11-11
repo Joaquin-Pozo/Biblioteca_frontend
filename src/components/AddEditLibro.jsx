@@ -142,6 +142,7 @@ const AddEditLibro = () => {
                     <MenuItem value="Terror">Terror</MenuItem>
                     <MenuItem value="Ficción">Ficción</MenuItem>
                     <MenuItem value="Historia">Historia</MenuItem>
+                    <MenuItem value="Poesia">Poesía</MenuItem>
                 </TextField>
             </FormControl>
 
