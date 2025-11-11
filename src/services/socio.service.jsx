@@ -22,7 +22,12 @@ const update = (id, data) => {
 
 //Eliminar socio por id
 const remove = (id) => {
-    return httpClient.delete(`/socio/${id}`);
+    return httpClient.put(`/socio/eliminar/${id}`);
 }
 
-export default { getAll, get, create, update, remove };
+//Activar socio por id
+const activate = (id) => {
+    return httpClient.put(`/socio/activar/${id}`);
+}
+
+export default { getAll, get, create, update, activate, remove };

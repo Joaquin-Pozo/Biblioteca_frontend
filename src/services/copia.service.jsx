@@ -22,7 +22,12 @@ const update = (id, data) => {
 
 //Eliminar copia por id
 const remove = (id) => {
-    return httpClient.delete(`/copia/${id}`);
+    return httpClient.put(`/copia/eliminar/${id}`);
 }
 
-export default { getAll, get, create, update, remove };
+//Reparar copia por id
+const repair = (id) => {
+    return httpClient.put(`/copia/reparar/${id}`);
+}
+
+export default { getAll, get, create, update, remove, repair };
