@@ -34,23 +34,6 @@ const AutoresList = () => {
     init();
   }, []);
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "¿Está seguro que desea eliminar este autor?"
-    );
-    if (confirmDelete) {
-      autorService
-        .remove(id)
-        .then(() => {
-          console.log("Autor eliminado correctamente.");
-          init();
-        })
-        .catch((error) => {
-          console.log("Error al eliminar autor:", error);
-        });
-    }
-  };
-
   const handleEdit = (id) => {
     navigate(`/autor/edit/${id}`);
   };
@@ -111,15 +94,6 @@ const AutoresList = () => {
                     sx={{ mr: 1 }}
                   >
                     Editar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    onClick={() => handleDelete(autor.id)}
-                    startIcon={<DeleteIcon />}
-                  >
-                    Eliminar
                   </Button>
                 </TableCell>
               </TableRow>
