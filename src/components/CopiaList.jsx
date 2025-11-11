@@ -40,18 +40,39 @@ const CopiaList = () => {
   const handleDelete = (id) => {
     console.log("Printing id", id);
     const confirmDelete = window.confirm(
-      "¿Esta seguro que desea borrar esta copia de libro?"
+      "¿Esta seguro que desea dar de baja esta copia de libro?"
     );
     if (confirmDelete) {
       copiaService
         .remove(id)
         .then((response) => {
-          console.log("Copia de libro ha sido eliminado.", response.data);
+          console.log("Copia de libro ha sido dada de baja.", response.data);
           init();
         })
         .catch((error) => {
           console.log(
-            "Se ha producido un error al intentar eliminar la copia de libro.",
+            "Se ha producido un error al intentar dar de baja la copia de libro.",
+            error
+          );
+        });
+    }
+  };
+
+  const handleRepair = (id) => {
+    console.log("Printing id", id);
+    const confirmRepair = window.confirm(
+      "¿Esta seguro que desea reparar esta copia de libro?"
+    );
+    if (confirmRepair) {
+      copiaService
+        .repair(id)
+        .then((response) => {
+          console.log("Copia de libro ha sido reparada.", response.data);
+          init();
+        })
+        .catch((error) => {
+          console.log(
+            "Se ha producido un error al intentar reparar la copia de libro.",
             error
           );
         });
@@ -91,7 +112,7 @@ const CopiaList = () => {
                   <TableCell align="left">{copia.codigoBarras}</TableCell>
                   <TableCell align="left">{copia.estadoCopia}</TableCell>
 
-                  <TableCell>
+                  <TableCell align="center">
                     <Button
                       variant="contained"
                       color="info"
@@ -102,17 +123,32 @@ const CopiaList = () => {
                     >
                       Editar
                     </Button>
-
-                    <Button
+                    {/* Botón para dar de baja una copia */}
+                    {copia.estadoCopia != "baja" && copia.estadoCopia != "reparacion" && (
+                      <Button
                       variant="contained"
                       color="error"
                       size="small"
                       onClick={() => handleDelete(copia.id)}
                       style={{ marginLeft: "0.5rem" }}
                       startIcon={<DeleteIcon />}
-                    >
-                    Eliminar
-                    </Button>
+                      >
+                      Dar de baja
+                      </Button>
+                    )}
+                    {/* Botón para dar de reparar una copia */}
+                    {copia.estadoCopia === "reparacion" && (
+                      <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      onClick={() => handleRepair(copia.id)}
+                      style={{ marginLeft: "0.5rem" }}
+                      startIcon={<DeleteIcon />}
+                      >
+                      Reparar
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
