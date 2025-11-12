@@ -74,6 +74,7 @@ const PrestamosList = () => {
               <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Socio</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Libro</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Copia</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Autor</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Fecha Préstamo</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>
@@ -93,6 +94,9 @@ const PrestamosList = () => {
                 <TableCell>{p.socio?.nombreCompleto ?? "—"}</TableCell>
                 <TableCell>
                   {p.copia?.libro?.titulo ?? "—"}
+                </TableCell>
+                <TableCell>
+                  {p.copia?.codigoBarras ?? "—"}
                 </TableCell>
                 <TableCell>
                   {p.copia?.libro?.autor?.nombreCompleto ?? "—"}
