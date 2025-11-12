@@ -70,7 +70,7 @@ const LibroList = () => {
                 <TableCell align="left" sx={{ fontWeight: "bold" }}>Título</TableCell>
                 <TableCell align="left" sx={{ fontWeight: "bold" }}>Categoria</TableCell>
                 <TableCell align="left" sx={{ fontWeight: "bold" }}>Editorial</TableCell>
-                <TableCell align="left" sx={{ fontWeight: "bold" }}>Publicación</TableCell>
+                <TableCell align="left" sx={{ fontWeight: "bold" }}>Año de publicación</TableCell>
                 <TableCell align="left" sx={{ fontWeight: "bold" }}>Autor</TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>Acciones</TableCell>
               </TableRow>
@@ -87,7 +87,7 @@ const LibroList = () => {
                   <TableCell align="left">{libro.anioPublicacion}</TableCell>
                   <TableCell>{libro.autor?.nombreCompleto}</TableCell>
                   
-                  <TableCell>
+                  <TableCell align="center">
                     <Button
                       variant="contained"
                       color="info"
