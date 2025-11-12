@@ -17,12 +17,12 @@ import Alert from "@mui/material/Alert";
 const AddReturnPrestamo = () => {
   const [socios, setSocios] = useState([]);
   const [copias, setCopias] = useState([]);
+  const [libros, setLibros] = useState([]);
 
   const [socioId, setSocioId] = useState("");
-  const [copiaId, setCopiaId] = useState("");
-  const [fechaPrestamo, setFechaPrestamo] = useState("");
+  const [libroId, setLibroId] = useState("");
+  const [copiaSeleccionada, setCopiaSeleccionada] = useState(null);
   const [fechaPactadaDevolucion, setFechaPactadaDevolucion] = useState("");
-  const [fechaDevolucion, setFechaDevolucion] = useState("");
   const [daniado, setDaniado] = useState(false);
   const [multa, setMulta] = useState("");
 
@@ -35,20 +35,17 @@ const AddReturnPrestamo = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setOpenSnackbar(false);
 
+  // Guarda el préstamo o devolución
   const savePrestamo = (e) => {
     e.preventDefault();
 
     const prestamo = {
       id,
       socio: { id: socioId },
-      copia: { id: copiaId },
-      fechaPrestamo,
+      copia: { id: copiaSeleccionada?.id },
       fechaPactadaDevolucion,
-      fechaDevolucion,
       daniado,
       multa,
     };
@@ -58,7 +55,6 @@ const AddReturnPrestamo = () => {
       prestamoService
         .returnLoan(id, prestamo)
         .then((response) => {
-          alert(response);
           setSnackbarMessage("Devolución registrada correctamente.");
           setSnackbarSeverity("success");
           setOpenSnackbar(true);
@@ -76,22 +72,24 @@ const AddReturnPrestamo = () => {
           .create(prestamo)
           .then((response) => {
             console.log("Respuesta del backend:", response);
+            console.log("Prestamo a enviar:", prestamo);
 
             // Verificar si la respuesta trae un mensaje de error o un objeto válido
             if (typeof response.data === "string") {
               // El backend devolvió un mensaje (no un objeto)
               setSnackbarMessage(response.data);
-              setSnackbarSeverity("warning"); // o "error", según tu preferencia
-              setOpenSnackbar(true);
+              setSnackbarSeverity("warning");
+              
             } else {
               // El backend devolvió un objeto (éxito)
               setSnackbarMessage("Préstamo registrado correctamente.");
               setSnackbarSeverity("success");
-              setOpenSnackbar(true);
               setTimeout(() => navigate("/prestamo/list"), 1500);
             }
+            setOpenSnackbar(true);
           })
           .catch((error) => {
+            console.log("Prestamo a enviar:", prestamo);
             console.error("Error al registrar préstamo:", error);
             setSnackbarMessage("Error al registrar préstamo.");
             setSnackbarSeverity("error");
@@ -102,7 +100,24 @@ const AddReturnPrestamo = () => {
 
   useEffect(() => {
     socioService.getAll().then((res) => setSocios(res.data));
-    copiaService.getAll().then((res) => setCopias(res.data));
+    copiaService.getAll().then((res) => {
+      console.log("Copias desde backend:", res.data);
+      const todasCopias = res.data;
+
+      // Agrupa las copias por libro y se queda solamente con los títulos únicos
+      const librosUnicos = [];
+      const titulosVistos = new Set();
+
+      todasCopias.forEach((c) => {
+        if (c.libro && !titulosVistos.has(c.libro.id)) {
+          librosUnicos.push(c.libro);
+          titulosVistos.add(c.libro.id);
+        }
+      });
+
+      setCopias(todasCopias);
+      setLibros(librosUnicos);
+    });
 
     if (id) {
       setTitle("Registrar Devolución");
@@ -111,22 +126,47 @@ const AddReturnPrestamo = () => {
         .then((res) => {
           const prestamo = res.data;
           setSocioId(prestamo.socio?.id);
-          setCopiaId(prestamo.copia?.id);
-          setFechaPrestamo(prestamo.fechaPrestamo);
+          setLibroId(prestamo.copia?.libro?.id);
+          setCopiaSeleccionada(prestamo.copia);
           setFechaPactadaDevolucion(prestamo.fechaPactadaDevolucion);
-          setFechaDevolucion(prestamo.fechaDevolucion || "");
           setDaniado(prestamo.daniado || false);
           setMulta(prestamo.multa || "");
         })
-        .catch((error) => {
-          console.error("Error al obtener préstamo:", error);
-        });
+        .catch((error) => console.error("Error al obtener préstamo:", error));
     } else {
       setTitle("Registrar Préstamo");
     }
   }, [id]);
 
-  const disabledFields = Boolean(id); // Deshabilita campos al devolver
+  const disabledFields = Boolean(id);
+
+  // Cuando se elige un libro, selecciona la primera copia disponible
+  const handleLibroChange = (libroSeleccionado) => {
+  setLibroId(libroSeleccionado);
+
+  // Filtra las copias que pertenezcan a este libro
+  const copiasDeEsteLibro = copias.filter(
+    (c) => c.libro?.id === libroSeleccionado
+  );
+
+  console.log("Copias de este libro:", copiasDeEsteLibro);
+
+  // Busca una copia con estado "DISPONIBLE" (en cualquier formato)
+  const copiaDisponible = copiasDeEsteLibro.find((c) => {
+    const estado = (c.estado || c.estadoCopia || "").toLowerCase();
+    return estado === "disponible";
+  });
+
+  if (copiaDisponible) {
+    setCopiaSeleccionada(copiaDisponible);
+    console.log("Copia seleccionada:", copiaDisponible);
+  } else {
+    setCopiaSeleccionada(null);
+    setSnackbarMessage("No hay copias disponibles para este libro.");
+    setSnackbarSeverity("warning");
+    setOpenSnackbar(true);
+  }
+};
 
   return (
     <Box
@@ -158,66 +198,52 @@ const AddReturnPrestamo = () => {
         </Select>
       </FormControl>
 
-      {/* Copia */}
+      {/* Libro */}
       <FormControl fullWidth variant="standard">
-        <InputLabel id="copia-label">Libro</InputLabel>
+        <InputLabel id="libro-label">Libro</InputLabel>
         <Select
-          labelId="copia-label"
-          id="copiaId"
-          value={copiaId}
-          onChange={(e) => setCopiaId(e.target.value)}
+          labelId="libro-label"
+          id="libroId"
+          value={libroId}
+          onChange={(e) => handleLibroChange(e.target.value)}
           required
           disabled={disabledFields}
         >
-          {copias.map((c) => (
-            <MenuItem key={c.id} value={c.id}>
-              {c.libro?.titulo}
+          {libros.map((libro) => (
+            <MenuItem key={libro.id} value={libro.id}>
+              {libro.titulo}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
-      {/* Fechas */}
+      {/* Muestra el código de barras de la copia seleccionado (solo lectura) */ }
       <TextField
-        id="fechaPrestamo"
-        label="Fecha de préstamo"
-        type="date"
-        value={fechaPrestamo}
-        onChange={(e) => setFechaPrestamo(e.target.value)}
-        variant="standard"
-        fullWidth
-        required
-        disabled={disabledFields}
-        InputLabelProps={{ shrink: true }}
+      label="Copia seleccionada (código de barras)"
+      value={copiaSeleccionada?.codigoBarras || "Ninguna copia seleccionada"}
+      variant="standard"
+      fullWidth
+      disabled
       />
 
-      <TextField
-        id="fechaPactadaDevolucion"
-        label="Fecha pactada devolución"
-        type="date"
-        value={fechaPactadaDevolucion}
-        onChange={(e) => setFechaPactadaDevolucion(e.target.value)}
-        variant="standard"
-        fullWidth
-        required
-        disabled={disabledFields}
-        InputLabelProps={{ shrink: true }}
-      />
+      {/* Fecha pactada devolución */}
+      {!id && (
+        <TextField
+          id="fechaPactadaDevolucion"
+          label="Fecha pactada devolución"
+          type="date"
+          value={fechaPactadaDevolucion}
+          onChange={(e) => setFechaPactadaDevolucion(e.target.value)}
+          variant="standard"
+          fullWidth
+          required
+          InputLabelProps={{ shrink: true }}
+        />
+      )}
 
+      {/* Campos visibles solo en devolución */}
       {id && (
         <>
-          <TextField
-            id="fechaDevolucion"
-            label="Fecha efectiva devolución"
-            type="date"
-            value={fechaDevolucion}
-            onChange={(e) => setFechaDevolucion(e.target.value)}
-            variant="standard"
-            fullWidth
-            required
-            InputLabelProps={{ shrink: true }}
-          />
-
           <TextField
             id="daniado"
             select
@@ -258,18 +284,14 @@ const AddReturnPrestamo = () => {
         <Link to="/prestamo/list">Volver al listado</Link>
       </Box>
 
-      {/* Snackbar para mensajes */}
+      {/* Snackbar */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
