@@ -18,6 +18,17 @@ const create = data => {
 const update = (id, data) => {
     return httpClient.put(`/libro/${id}`, data);
 }
+
+// Buscar libros por título
+const buscarPorTitulo = (titulo) => {
+  return httpClient.get(`/libro/buscar`, { params: { titulo } });
+};
+
+// Buscar libros por autor
+const buscarPorAutor = (autor) => {
+  return httpClient.get(`/libro/buscarPorAutor`, { params: { autor } });
+};
+
 /*
 //Dar de baja libro
 const unsubscribeTool = id => {
@@ -34,4 +45,4 @@ const getLibroUnitsByState = data => {
 }*/
 
 //, create, get, unsubscribeTool, getToolUnitsByState
-export default { getAll, get, create, update };
+export default { getAll, get, create, update, buscarPorTitulo, buscarPorAutor };

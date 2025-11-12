@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import libroService from "../services/libro.service";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, TextField, Stack } from "@mui/material";
 
 const LibroList = () => {
   const [libros, setLibros] = useState([]);
+  const [tituloBusqueda, setTituloBusqueda] = useState("");
+  const [autorBusqueda, setAutorBusqueda] = useState("");
   const navigate = useNavigate();
 
   const init = () => {
@@ -43,13 +44,107 @@ const LibroList = () => {
     navigate(`/libro/edit/${id}`);
   };
 
+  // Busqueda por título
+  const handleBuscarPorTitulo = () => {
+    if (!tituloBusqueda.trim()) {
+      init(); // si el campo está vacío, recarga todos los libros
+      return;
+    }
+
+    libroService
+      .buscarPorTitulo(tituloBusqueda)
+      .then((response) => setLibros(response.data))
+      .catch((error) => console.error("Error al buscar por título:", error));
+  };
+
+  // Limpia la busqueda de titulos
+  const handleLimpiarTitulo = () => {
+    setTituloBusqueda("");
+    init(); // vuelve a cargar todos los libros
+  };
+
+  // Busqueda por autor
+  const handleBuscarPorAutor = () => {
+    if (!autorBusqueda.trim()) {
+      init();
+      return;
+    }
+
+    libroService
+      .buscarPorAutor(autorBusqueda)
+      .then((response) => setLibros(response.data))
+      .catch((error) => console.error("Error al buscar por autor:", error));
+  };
+
+  // Limpia la busqueda de autores
+  const handleLimpiarAutor = () => {
+    setAutorBusqueda("");
+    init();
+  };
+
 
   return (
     <Container sx={{ mt: 5 }}>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom align="center">
         Lista de Libros
       </Typography>
 
+      {/* Sección de búsqueda */}
+      <Box
+        sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2, mb: 4}}
+      >
+        {/* Búsqueda por título */}
+        <Stack direction="row" spacing={2} alignItems="center">
+          <TextField
+            label="Buscar por título"
+            variant="outlined"
+            size="small"
+            value={tituloBusqueda}
+            onChange={(e) => setTituloBusqueda(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBuscarPorTitulo}
+          >
+            Buscar
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={handleLimpiarTitulo}
+          >
+            Limpiar
+          </Button>
+        </Stack>
+
+        {/* Búsqueda por autor */}
+        <Stack direction="row" spacing={2} alignItems="center">
+          <TextField
+            label="Buscar por autor"
+            variant="outlined"
+            size="small"
+            value={autorBusqueda}
+            onChange={(e) => setAutorBusqueda(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBuscarPorAutor}
+          >
+            Buscar
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={handleLimpiarAutor}
+          >
+            Limpiar
+          </Button>
+        </Stack>
+      </Box>
+
+      {/* Botón para agregar libro */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Button
           variant="contained"
@@ -61,10 +156,11 @@ const LibroList = () => {
           Añadir Libro
         </Button>
       </Box>
-    
+
+      {/* Tabla de libros */}
       <TableContainer component={Paper}>
           <br /> <br />
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="tabla de libros">
             <TableHead>
               <TableRow>
                 <TableCell align="left" sx={{ fontWeight: "bold" }}>Título</TableCell>
