@@ -44,9 +44,10 @@ const PrestamosList = () => {
   const formatDate = (dateTimeStr) => {
     if (!dateTimeStr) return "-";
     const date = new Date(dateTimeStr);
-    return date.toLocaleString("es-CL", {
-      dateStyle: "short",
-      timeStyle: "short",
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
   };
 
@@ -76,7 +77,7 @@ const PrestamosList = () => {
               <TableCell sx={{ fontWeight: "bold" }}>Autor</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Fecha Préstamo</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>
-                Fecha Pactada Devolución
+                Fecha Devolución
               </TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Estado</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Multa ($)</TableCell>
@@ -97,7 +98,12 @@ const PrestamosList = () => {
                   {p.copia?.libro?.autor?.nombreCompleto ?? "—"}
                 </TableCell>
                 <TableCell>{formatDate(p.fechaPrestamo)}</TableCell>
-                <TableCell>{formatDate(p.fechaPactadaDevolucion)}</TableCell>
+                {p.estadoPrestamo === "completado" && (
+                  <TableCell>{formatDate(p.fechaDevolucion)}</TableCell>
+                )}
+                {p.estadoPrestamo != "completado" && (
+                  <TableCell>{formatDate(p.fechaPactadaDevolucion)}</TableCell>
+                )}
                 <TableCell>{p.estadoPrestamo}</TableCell>
                 <TableCell>{p.multa ?? 0}</TableCell>
                 <TableCell>{p.daniado ? "Sí" : "No"}</TableCell>
