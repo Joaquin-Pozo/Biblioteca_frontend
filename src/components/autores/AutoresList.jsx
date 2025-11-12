@@ -34,6 +34,17 @@ const AutoresList = () => {
     init();
   }, []);
 
+  // Helper para formatear fechas legibles
+  const formatDate = (dateTimeStr) => {
+    if (!dateTimeStr) return "-";
+    const date = new Date(dateTimeStr);
+    return date.toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   const handleEdit = (id) => {
     navigate(`/autor/edit/${id}`);
   };
@@ -61,9 +72,6 @@ const AutoresList = () => {
           <TableHead>
             <TableRow>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>
-                ID
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: "bold" }}>
                 Nombre Completo
               </TableCell>
               <TableCell align="left" sx={{ fontWeight: "bold" }}>
@@ -80,10 +88,9 @@ const AutoresList = () => {
           <TableBody>
             {autores.map((autor) => (
               <TableRow key={autor.id}>
-                <TableCell align="left">{autor.id}</TableCell>
                 <TableCell align="left">{autor.nombreCompleto}</TableCell>
                 <TableCell align="left">{autor.nacionalidad}</TableCell>
-                <TableCell align="left">{autor.fechaNacimiento}</TableCell>
+                <TableCell align="left">{formatDate(autor.fechaNacimiento)}</TableCell>
                 <TableCell align="center">
                   <Button
                     variant="contained"
