@@ -13,6 +13,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import autorService from "../../services/autorService";
 import { Box, Container, Typography } from "@mui/material";
+import AutorCsvUpload from "./AutorCsvUpload";
+
 
 const AutoresList = () => {
   const [autores, setAutores] = useState([]);
@@ -66,6 +68,9 @@ const AutoresList = () => {
           Añadir Autor
         </Button>
       </Box>
+
+      {/* 🔽 Bloque de carga masiva de autores por CSV */}
+      <AutorCsvUpload />
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="tabla autores">
