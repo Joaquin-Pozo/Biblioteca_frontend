@@ -20,17 +20,17 @@ const PrestamosList = () => {
   const navigate = useNavigate();
 
   // Inicializa los préstamos
-  const init = () => {
-    prestamoService
-      .getAll()
-      .then((response) => {
-        console.log("Mostrando listado de préstamos:", response.data);
-        setPrestamos(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener préstamos:", error);
-      });
-  };
+const init = () => {
+  prestamoService
+    .getAll()
+    .then((response) => {
+      const prestamosOrdenados = response.data.sort((a, b) => b.id - a.id);
+      setPrestamos(prestamosOrdenados);
+    })
+    .catch((error) => {
+      console.error("Error al obtener préstamos:", error);
+    });
+};
 
   const handleReturn = (id) => {
     navigate(`/prestamo/return/${id}`);

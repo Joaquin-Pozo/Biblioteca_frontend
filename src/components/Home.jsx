@@ -1,13 +1,22 @@
 import { Box, Typography, Container, Paper, Divider, List, ListItem, ListItemText } from "@mui/material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import Dashboard from "./Dashboard";
 
 export default function Home() {
   return (
-    <Container maxWidth="md" sx={{ mt: 8 }}>
+    <Container maxWidth="lg" sx={{ mt: 5 }}>
+
+      {/* ✅ KPIs - MISMO ANCHO */}
+      <Box sx={{ mb: 5 }}>
+        <Dashboard />
+      </Box>
+
+      {/* ✅ PANEL PRINCIPAL - MISMO ANCHO */}
       <Paper
         elevation={6}
         sx={{
           p: 5,
+          mx: "150px",
           borderRadius: 4,
           textAlign: "center",
           background: "linear-gradient(135deg, #00A19B 0%, #009688 100%)",
@@ -33,7 +42,7 @@ export default function Home() {
           Integrantes:
         </Typography>
 
-        <List sx={{ display: "inline-block", textAlign:"center" }}>
+        <List sx={{ display: "inline-block", textAlign: "center" }}>
           {["Joaquín Pozo", "Gianello Valenzuela", "Roberto Orellana", "Karina Bustamante"].map(
             (nombre, index) => (
               <ListItem key={index} sx={{ py: 0.5 }}>
@@ -46,6 +55,7 @@ export default function Home() {
           )}
         </List>
       </Paper>
+
     </Container>
   );
 }

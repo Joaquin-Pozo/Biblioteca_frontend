@@ -1,0 +1,43 @@
+
+
+
+/*===============
+#### CSS KPIs ###
+=================*/
+
+.kpi-card {
+  background: #1e293b;
+  color: white;
+  border-radius: 12px;
+  padding: 15px;
+  width: 220px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.kpi-card h4 {
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+.kpi-card h2 {
+  font-size: 36px;
+  margin: 10px 0;
+}
+
+.kpi-card p {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.meta {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.ok {
+  border-inline: 6px solid #22c55e;
+}
+
+.alerta {
+  border-inline: 6px solid #ef4444;
+}
