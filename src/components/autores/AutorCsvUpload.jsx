@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Button from "@mui/material/Button";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 
 // Armamos la URL base del backend usando las variables .env de Vite
 const API_BASE_URL = `http://${import.meta.env.VITE_LIBRARY_BACKEND_SERVER}:${import.meta.env.VITE_LIBRARY_BACKEND_PORT}`;
@@ -9,6 +11,8 @@ export default function AutorCsvUpload() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0] || null);
@@ -56,7 +60,22 @@ export default function AutorCsvUpload() {
       <h3>Carga masiva de autores (CSV)</h3>
 
       <div style={{ marginBottom: "0.5rem" }}>
-        <input type="file" accept=".csv" onChange={handleFileChange} />
+        <input
+          type="file"
+          accept=".csv"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<GroupAddIcon />}
+          onClick={() => fileInputRef.current.click()}
+        >
+          Subir CSV
+        </Button>
       </div>
 
       <button onClick={handleUpload} disabled={loading}>
