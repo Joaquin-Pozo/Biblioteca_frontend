@@ -37,15 +37,19 @@ const AutoresList = () => {
   }, []);
 
   // Helper para formatear fechas legibles
-  const formatDate = (dateTimeStr) => {
-    if (!dateTimeStr) return "-";
-    const date = new Date(dateTimeStr);
-    return date.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+    const formatDate = (dateTimeStr) => {
+        if (!dateTimeStr) return "-";
+
+        // Forzar a medianoche local para evitar desfase por zona horaria
+        const [year, month, day] = dateTimeStr.split("T")[0].split("-");
+        const date = new Date(year, month - 1, day);
+
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    };
 
   const handleEdit = (id) => {
     navigate(`/autor/edit/${id}`);

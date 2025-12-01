@@ -40,16 +40,20 @@ const init = () => {
     init();
   }, []);
 
-  // Helper para formatear fechas legibles
-  const formatDate = (dateTimeStr) => {
-    if (!dateTimeStr) return "-";
-    const date = new Date(dateTimeStr);
-    return date.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
+    // Helper para formatear fechas legibles
+    const formatDate = (dateTimeStr) => {
+        if (!dateTimeStr) return "-";
+
+        // Forzar a medianoche local para evitar desfase por zona horaria
+        const [year, month, day] = dateTimeStr.split("T")[0].split("-");
+        const date = new Date(year, month - 1, day);
+
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        });
+    };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -77,9 +81,7 @@ const init = () => {
               <TableCell sx={{ fontWeight: "bold" }}>Copia</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Autor</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Fecha Préstamo</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>
-                Fecha Devolución
-              </TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Fecha Devolución</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Estado</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Multa ($)</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Dañado</TableCell>
@@ -89,7 +91,15 @@ const init = () => {
 
           <TableBody>
             {prestamos.map((p) => (
-              <TableRow key={p.id}>
+              <TableRow
+                key={p.id}
+                sx={{
+                    backgroundColor:
+                    p.estadoPrestamo != "completado" && p.fechaDevolucion === null && isAtrasado(p.fechaPactadaDevolucion)
+                        ? "#ffebee"
+                        : "inherit",
+                }}
+                >
                 <TableCell>{p.id}</TableCell>
                 <TableCell>{p.socio?.nombreCompleto ?? "—"}</TableCell>
                 <TableCell>
@@ -113,19 +123,19 @@ const init = () => {
                 <TableCell>{p.daniado ? "Sí" : "No"}</TableCell>
 
                 <TableCell>
-                  {p.estadoPrestamo === "activo" && (
+                  {p.estadoPrestamo != "completado" && p.fechaDevolucion === null && (
                     <Tooltip title="Registrar devolución">
-                      <Button
+                        <Button
                         variant="contained"
                         color="info"
                         size="small"
                         onClick={() => handleReturn(p.id)}
                         startIcon={<EditIcon />}
-                      >
+                        >
                         Devolver
-                      </Button>
+                        </Button>
                     </Tooltip>
-                  )}
+                    )}
                 </TableCell>
               </TableRow>
             ))}
@@ -142,6 +152,18 @@ const init = () => {
       </TableContainer>
     </Box>
   );
+};
+
+const isAtrasado = (fechaPactada) => {
+    if (!fechaPactada) return false;
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // Normalizar fecha actual
+
+    const [year, month, day] = fechaPactada.split("T")[0].split("-");
+    const fechaDevolucion = new Date(year, month - 1, day);
+
+    return fechaDevolucion < hoy; // true si está vencido
 };
 
 export default PrestamosList;
