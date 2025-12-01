@@ -74,7 +74,7 @@ const AutoresList = () => {
       </Box>
 
       {/* 🔽 Bloque de carga masiva de autores por CSV */}
-      <AutorCsvUpload />
+      <AutorCsvUpload  onSuccess={init}/>
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="tabla autores">

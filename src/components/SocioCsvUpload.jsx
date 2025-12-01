@@ -1,25 +1,32 @@
 import { useState, useRef } from "react";
-import Button from "@mui/material/Button";
+import { Button, Box, Typography, Alert, Stack, Divider, Paper,} from "@mui/material";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 
-// Armamos la URL base del backend usando las variables .env de Vite
+// URL backend
 const API_BASE_URL = `http://${import.meta.env.VITE_LIBRARY_BACKEND_SERVER}:${import.meta.env.VITE_LIBRARY_BACKEND_PORT}`;
 const ETL_SOCIOS_URL = `${API_BASE_URL}/socio/etl/upload`;
 
-export default function SocioCsvUpload() {
+export default function SocioCsvUpload({ onSuccess }) {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
-    const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null);
 
+  // ✅ Cuando se selecciona archivo
   const handleFileChange = (event) => {
-    setFile(event.target.files[0] || null);
+    const selectedFile = event.target.files[0] || null;
+    setFile(selectedFile);
     setResult(null);
     setErrorMsg("");
+    setSuccessMsg(
+      selectedFile ? `Archivo seleccionado: ${selectedFile.name}` : ""
+    );
   };
 
+  // ✅ Subir archivo
   const handleUpload = async () => {
     if (!file) {
       setErrorMsg("Primero selecciona un archivo CSV.");
@@ -27,13 +34,13 @@ export default function SocioCsvUpload() {
     }
 
     const formData = new FormData();
-    // El nombre "file" debe coincidir con @RequestParam("file") en el backend
     formData.append("file", file);
 
     try {
       setLoading(true);
       setErrorMsg("");
       setResult(null);
+      setSuccessMsg("");
 
       const response = await fetch(ETL_SOCIOS_URL, {
         method: "POST",
@@ -42,74 +49,135 @@ export default function SocioCsvUpload() {
 
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(`Error HTTP ${response.status}: ${text}`);
+        throw new Error(text);
       }
 
       const data = await response.json();
       setResult(data);
+      setSuccessMsg("✅ Socios cargados correctamente.");
+
+      // ✅ Refrescar tabla automáticamente
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // ✅ Limpiar input
+      setFile(null);
+      fileInputRef.current.value = "";
+
     } catch (err) {
       console.error(err);
-      setErrorMsg("Ocurrió un error al cargar el archivo. Revisa la consola del navegador.");
+      setErrorMsg("❌ Error al cargar el archivo.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ border: "1px solid #ddd", padding: "1rem", borderRadius: "8px", marginTop: "1rem" }}>
-      <h3>Carga masiva de socios (CSV)</h3>
+    <Paper
+      elevation={0} // ✅ SIN SOMBRA
+      sx={{
+        p: 2,
+        pb: 1, // ✅ MENOS PADDING ABAJO
+        borderRadius: 2,
+        border: "1px solid #e0e0e0",
+        mt: 3,
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        Carga masiva de socios (CSV)
+      </Typography>
 
-      <div style={{ marginBottom: "0.5rem" }}>
-        <input
-          type="file"
-          accept=".csv"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
+      {/* ✅ CONTENEDOR EN DOS COLUMNAS */}
+      <Box sx={{ display: "flex", gap: 3, alignItems: "flex-start" }}>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<GroupAddIcon />}
-          onClick={() => fileInputRef.current.click()}
-        >
-          Subir CSV
-        </Button>
-      </div>
+        {/* ✅ COLUMNA IZQUIERDA: BOTONES + MENSAJES */}
+        <Box sx={{ minWidth: 280 }}>
+          <Stack spacing={1.2}>
+            <input
+              type="file"
+              accept=".csv"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
 
-      <button onClick={handleUpload} disabled={loading}>
-        {loading ? "Cargando..." : "Subir CSV y procesar"}
-      </button>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<GroupAddIcon />}
+              onClick={() => fileInputRef.current.click()}
+              disabled={loading}
+            >
+              Seleccionar CSV
+            </Button>
 
-      {errorMsg && (
-        <p style={{ color: "red", marginTop: "0.5rem" }}>
-          {errorMsg}
-        </p>
-      )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpload}
+              disabled={!file || loading}
+            >
+              {loading ? "Cargando..." : "Subir y procesar"}
+            </Button>
 
-      {result && (
-        <div style={{ marginTop: "1rem" }}>
-          <h4>Resultado del ETL</h4>
-          <p>Total filas: {result.totalFilas}</p>
-          <p>Filas insertadas: {result.filasInsertadas}</p>
-          <p>Filas actualizadas: {result.filasActualizadas}</p>
-          <p>Filas con error: {result.filasConError}</p>
+            {file && (
+              <Alert severity="info" sx={{ py: 0.5 }}>
+                📄 {file.name}
+              </Alert>
+            )}
 
-          {result.errores && result.errores.length > 0 && (
-            <div style={{ marginTop: "0.5rem" }}>
-              <h5>Detalle de errores:</h5>
-              <ul>
-                {result.errores.map((err, index) => (
-                  <li key={index}>
-                    Fila {err.fila}: {err.mensaje}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            {errorMsg && (
+              <Alert severity="error" sx={{ py: 0.5 }}>
+                {errorMsg}
+              </Alert>
+            )}
+
+            {successMsg && (
+              <Alert severity="success" sx={{ py: 0.5 }}>
+                {successMsg}
+              </Alert>
+            )}
+          </Stack>
+        </Box>
+
+        {/* ✅ COLUMNA DERECHA: RESULTADO ETL */}
+        {result && (
+          <Box sx={{ flex: 1 }}>
+            <Divider sx={{ mb: 1 }} />
+
+            <Typography variant="subtitle1" fontWeight="bold">
+              Resultado del ETL
+            </Typography>
+
+            <Typography>Total filas: {result.totalFilas}</Typography>
+            <Typography color="success.main">
+              Insertadas: {result.filasInsertadas}
+            </Typography>
+            <Typography color="warning.main">
+              Actualizadas: {result.filasActualizadas}
+            </Typography>
+            <Typography color="error.main">
+              Con error: {result.filasConError}
+            </Typography>
+
+            {result.errores?.length > 0 && (
+              <Box mt={1}>
+                <Typography variant="subtitle2" color="error">
+                  Detalle de errores:
+                </Typography>
+                <ul style={{ marginTop: 4 }}>
+                  {result.errores.map((err, index) => (
+                    <li key={index}>
+                      Fila {err.fila}: {err.mensaje}
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Paper>
   );
 }

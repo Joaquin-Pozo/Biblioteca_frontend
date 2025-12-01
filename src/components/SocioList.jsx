@@ -105,7 +105,7 @@ const SocioList = () => {
       </Box>
 
       {/* 🔽 Bloque de carga masiva de socios por CSV */}
-      <SocioCsvUpload />
+      <SocioCsvUpload onSuccess={init} />
 
       <TableContainer component={Paper}>
         <br /> <br />
